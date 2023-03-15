@@ -57,3 +57,27 @@ show create table student;
 -- 添加多列索引
 -- alter table table_name add index index_name (column_name, column_name1,...);
 
+-- 三、索引失效
+-- 1、添加索引的字段区分性差
+-- 字段唯一性差、频繁更新、大量为空少数有值
+-- 2、索引字段在or中，除非or中的条件都是索引字段
+-- 3、like '%xxx'
+-- 4、索引字段发生了隐式转换
+-- 如索引字段为varchar类型，但是却没有加单引号，直接where column_name=xxx
+-- 5、联合索引（多个普通字段组合在一起创建的索引）不满足最左匹配原则（按照最左优先的方式进行索引的匹配）
+-- 即联合索引（a,b,c），查询where a=1 以a开头的走索引，其他不走 
+-- 6、where条件中，索引字段有计算或使用了函数
+-- 7、is not null不走索引，is null走索引
+
+-- 强制使用索引
+-- select * from table_name force index(column_name) where 
+
+-- 四、Join过多或者子查询过多
+-- 不建议使用子查询，可以改成join来优化，但join关联表也不应该过多
+-- join在数据量较小时在内存中做的，匹配量小或者join_buffer设置的比较大，速度尚可
+-- join在数据量较大时，mysql会采用在硬盘上创建临时表的方式进行多张表的关联匹配
+
+-- 五、in 中的元素过多
+-- 代码层面做限制、元素分组或者引入多线程
+
+-- 六、数据量过大

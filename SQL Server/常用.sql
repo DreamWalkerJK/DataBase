@@ -1,6 +1,6 @@
 use Test;
 
--- 1.ĞĞ×ªÁĞ PIVOT
+-- 1.è¡Œè½¬åˆ— PIVOT
 create table sales(
 	id int,
 	name varchar(20),
@@ -8,35 +8,35 @@ create table sales(
 	number int
 );
 
-insert into sales values(1,N'Æ»¹û',1,1000);
-insert into sales values(1,N'Æ»¹û',2,2000);
-insert into sales values(1,N'Æ»¹û',3,4000);
-insert into sales values(1,N'Æ»¹û',4,5000);
-insert into sales values(2,N'Àæ×Ó',1,3000);
-insert into sales values(2,N'Àæ×Ó',2,3500);
-insert into sales values(2,N'Àæ×Ó',3,4200);
-insert into sales values(2,N'Àæ×Ó',4,5500);
+insert into sales values(1,N'è‹¹æœ',1,1000);
+insert into sales values(1,N'è‹¹æœ',2,2000);
+insert into sales values(1,N'è‹¹æœ',3,4000);
+insert into sales values(1,N'è‹¹æœ',4,5000);
+insert into sales values(2,N'æ¢¨å­',1,3000);
+insert into sales values(2,N'æ¢¨å­',2,3500);
+insert into sales values(2,N'æ¢¨å­',3,4200);
+insert into sales values(2,N'æ¢¨å­',4,5500);
 
 select * from sales;
 
 select Id, Name,
-[1] as 'Ò»¼¾¶È',
-[2] as '¶ş¼¾¶È',
-[3] as 'Èı¼¾¶È',
-[4] as 'ËÄ¼¾¶È'
+[1] as 'ä¸€å­£åº¦',
+[2] as 'äºŒå­£åº¦',
+[3] as 'ä¸‰å­£åº¦',
+[4] as 'å››å­£åº¦'
 from sales
 pivot
 (
 	sum(number) for quarter in ([1],[2],[3],[4])
 ) as pvt;
 
--- 2.ĞĞ×ªÁĞ Í¨ÓÃ
--- ¶àĞĞÊı¾İ±ä³ÉÒ»Ìõ¶àÁĞÊı¾İ£¬ĞÂÔöÁĞ
+-- 2.è¡Œè½¬åˆ— é€šç”¨
+-- å¤šè¡Œæ•°æ®å˜æˆä¸€æ¡å¤šåˆ—æ•°æ®ï¼Œæ–°å¢åˆ—
 select id, name,
-	sum(case when quarter=1 then number else 0 end) 'Ò»¼¾¶È',
-	sum(case when quarter=2 then number else 0 end) '¶ş¼¾¶È',
-	sum(case when quarter=3 then number else 0 end) 'Èı¼¾¶È',
-	sum(case when quarter=4 then number else 0 end) 'ËÄ¼¾¶È'
+	sum(case when quarter=1 then number else 0 end) 'ä¸€å­£åº¦',
+	sum(case when quarter=2 then number else 0 end) 'äºŒå­£åº¦',
+	sum(case when quarter=3 then number else 0 end) 'ä¸‰å­£åº¦',
+	sum(case when quarter=4 then number else 0 end) 'å››å­£åº¦'
 from sales
 group by id, name
 
@@ -64,7 +64,7 @@ pivot
 
 select * from salesTotal;
 
--- 3.ÁĞ×ªĞĞ UNPIVOT
+-- 3.åˆ—è½¬è¡Œ UNPIVOT
 select id,name,quarter,number
 from salesTotal
 unpivot
@@ -72,23 +72,23 @@ unpivot
 	number for quarter in ([Q1],[Q2],[Q3],[Q4])
 ) as unpvt;
 
--- 4.×Ö·û´®Ìæ»» substring/replace
+-- 4.å­—ç¬¦ä¸²æ›¿æ¢ substring/replace
 select replace ('abcdef', SUBSTRING('abcdefg', 2,4), '**');
 
--- 5.ËÄÉáÎåÈë ROUND º¯Êı
--- ±£ÁôĞ¡ÊıµãºóÁ½Î»£¬ĞèÒªËÄÉáÎåÈë
+-- 5.å››èˆäº”å…¥ ROUND å‡½æ•°
+-- ä¿ç•™å°æ•°ç‚¹åä¸¤ä½ï¼Œéœ€è¦å››èˆäº”å…¥
 select ROUND(150.45648 ,2);
 
--- ±£ÁôĞ¡ÊıµãºóÁ½Î»£¬0ÎªÄ¬ÈÏÖµ£¬±íÊ¾½øĞĞËÄÉáÎåÈë
+-- ä¿ç•™å°æ•°ç‚¹åä¸¤ä½ï¼Œ0ä¸ºé»˜è®¤å€¼ï¼Œè¡¨ç¤ºè¿›è¡Œå››èˆäº”å…¥
 select ROUND(150.45648, 2, 0);
 
--- ±£ÁôĞ¡ÊıµãºóÁ½Î»£¬²»ĞèÒªËÄÉáÎåÈë
-select ROUND(150.45648, 2, 1);  -- ×îºóÒ»Î»²ÎÊı³ıÁËÎª0£¬ÆäËûÊı×Ö¶¼ÊÇÒ»ÑùµÄĞ§¹û
+-- ä¿ç•™å°æ•°ç‚¹åä¸¤ä½ï¼Œä¸éœ€è¦å››èˆäº”å…¥
+select ROUND(150.45648, 2, 1);  -- æœ€åä¸€ä½å‚æ•°é™¤äº†ä¸º0ï¼Œå…¶ä»–æ•°å­—éƒ½æ˜¯ä¸€æ ·çš„æ•ˆæœ
 
--- ±£ÁôĞ¡ÊıµãºóÁ½Î»£¬²»ĞèÒªËÄÉáÎåÈë
+-- ä¿ç•™å°æ•°ç‚¹åä¸¤ä½ï¼Œä¸éœ€è¦å››èˆäº”å…¥
 select ROUND(150.45648, 2, 2);
 
--- 6.COALESCE£¬ ·µ»ØÆä²ÎÊıÖĞµÄµÚÒ»¸ö·Ç¿Õ±í´ïÊ½
+-- 6.COALESCEï¼Œ è¿”å›å…¶å‚æ•°ä¸­çš„ç¬¬ä¸€ä¸ªéç©ºè¡¨è¾¾å¼
 select coalesce(null, null, 1, 2, 3);
 select coalesce(null, 3, 2, 1, null);
 
@@ -97,7 +97,7 @@ select count(*) from salesTotal;
 select count(id) from salesTotal;
 select count(1) from salesTotal;
 
--- 8.²é¿´Êı¾İ¿â»º´æµÄSQL
+-- 8.æŸ¥çœ‹æ•°æ®åº“ç¼“å­˜çš„SQL
 use master;
 declare @dbid int
 select @dbid=dbid from sysdatabases where name='bookdb_pre';
@@ -108,47 +108,47 @@ from syscacheobjects
 where dbid=@dbid
 order by dbid,usecounts desc, objtype;
 
--- 9.É¾³ı¼Æ»®»º´æ
--- É¾³ıÕû¸öÊı¾İ¿âµÄ¼Æ»®»º´æ
+-- 9.åˆ é™¤è®¡åˆ’ç¼“å­˜
+-- åˆ é™¤æ•´ä¸ªæ•°æ®åº“çš„è®¡åˆ’ç¼“å­˜
 DBCC FREEPROCCACHE
 
--- É¾³ıÄ³¸öÊı¾İ¿âµÄ¼Æ»®»º´æ
+-- åˆ é™¤æŸä¸ªæ•°æ®åº“çš„è®¡åˆ’ç¼“å­˜
 use master;
 declare @dbid1 int
 select @dbid1=dbid from sysdatabases where name='bookdb_pre'
 DBCC FLUSHPROCINDB(@dbid1)
 
--- 10.SQL»»ĞĞ
---ÖÆ±í·û CHAR(9)
---»»ĞĞ·û CHAR(10)
---»Ø³µ CHAR(13)
+-- 10.SQLæ¢è¡Œ
+--åˆ¶è¡¨ç¬¦ CHAR(9)
+--æ¢è¡Œç¬¦ CHAR(10)
+--å›è½¦ CHAR(13)
 
--- ÒÔÎÄ±¾¸ñÊ½ÏÔÊ¾½á¹û¿ÉÓÃselect
+-- ä»¥æ–‡æœ¬æ ¼å¼æ˜¾ç¤ºç»“æœå¯ç”¨select
 print 'SQL'+char(13)+'ENTER'
 
--- 11.TRUNCATE¡¢DELETE
--- truncate ËÙ¶È¿ì¡¢Ğ§ÂÊ¸ß
--- truncate ±È delete ËÙ¶È¿ì£¬ÇÒÊ¹ÓÃµÄÏµÍ³ºÍÊÂÎñÈÕÖ¾×ÊÔ´ÉÙ
--- delete Ã¿É¾Ò»ĞĞ£¬²¢ÔÚÊÂÎñÈÕÖ¾ÖĞÎªËùÉ¾³ıµÄÃ¿ĞĞ¼ÇÂ¼Ò»Ïî¡£
--- truncateÍ¨¹ıÊÍ·Å´æ´¢±íÊı¾İËùÓÃµÄÊı¾İÒ³À´É¾³ıÊı¾İ£¬²¢ÇÒÖ»ÔÚÊÂÎñÈÕÖ¾ÖĞ¼ÇÂ¼Ò³µÄÊÍ·Å¡£
--- truncate É¾³ıËùÓĞĞĞ£¬µ«±í½á¹¹¼°ÁĞ¡¢Ô¼Êø¡¢Ë÷ÒıµÈ±£³Ö²»±ä£¬±êÊ¶¼ÆÊıÖµÖØÖÃ¡£
--- delete ±£Áô±êÊ¶¼ÆÊıÖµ
--- truncate ²»ÄÜÊ¹ÓÃÓĞforeign key Ô¼ÊøÒıÓÃµÄ±í£¬truncate ²»¼ÇÂ¼ÔÚÈÕÖ¾ÖĞ£¬ËùÒÔ²»ÄÜ¼¤»î´¥·¢Æ÷¡£Ò²²»ÄÜÓÃÓÚ²ÎÓëÁËË÷ÒıÊÓÍ¼µÄ±í
+-- 11.TRUNCATEã€DELETE
+-- truncate é€Ÿåº¦å¿«ã€æ•ˆç‡é«˜
+-- truncate æ¯” delete é€Ÿåº¦å¿«ï¼Œä¸”ä½¿ç”¨çš„ç³»ç»Ÿå’Œäº‹åŠ¡æ—¥å¿—èµ„æºå°‘
+-- delete æ¯åˆ ä¸€è¡Œï¼Œå¹¶åœ¨äº‹åŠ¡æ—¥å¿—ä¸­ä¸ºæ‰€åˆ é™¤çš„æ¯è¡Œè®°å½•ä¸€é¡¹ã€‚
+-- truncateé€šè¿‡é‡Šæ”¾å­˜å‚¨è¡¨æ•°æ®æ‰€ç”¨çš„æ•°æ®é¡µæ¥åˆ é™¤æ•°æ®ï¼Œå¹¶ä¸”åªåœ¨äº‹åŠ¡æ—¥å¿—ä¸­è®°å½•é¡µçš„é‡Šæ”¾ã€‚
+-- truncate åˆ é™¤æ‰€æœ‰è¡Œï¼Œä½†è¡¨ç»“æ„åŠåˆ—ã€çº¦æŸã€ç´¢å¼•ç­‰ä¿æŒä¸å˜ï¼Œæ ‡è¯†è®¡æ•°å€¼é‡ç½®ã€‚
+-- delete ä¿ç•™æ ‡è¯†è®¡æ•°å€¼
+-- truncate ä¸èƒ½ä½¿ç”¨æœ‰foreign key çº¦æŸå¼•ç”¨çš„è¡¨ï¼Œtruncate ä¸è®°å½•åœ¨æ—¥å¿—ä¸­ï¼Œæ‰€ä»¥ä¸èƒ½æ¿€æ´»è§¦å‘å™¨ã€‚ä¹Ÿä¸èƒ½ç”¨äºå‚ä¸äº†ç´¢å¼•è§†å›¾çš„è¡¨
 use Test;
 TRUNCATE table sales; 
 delete from salesTotal;
 
--- 12.³£ÓÃÏµÍ³¼ì²â½Å±¾
--- ²é¿´ÄÚ´æ×´Ì¬
+-- 12.å¸¸ç”¨ç³»ç»Ÿæ£€æµ‹è„šæœ¬
+-- æŸ¥çœ‹å†…å­˜çŠ¶æ€
 dbcc memorystatus;
 
--- ²é¿´ÄÄ¸öÒıÆğµÄ×èÈû£¬ blk
+-- æŸ¥çœ‹å“ªä¸ªå¼•èµ·çš„é˜»å¡ï¼Œ blk
 exec sp_who active;
 
--- ²é¿´Ëø×¡ÁËÄÄ¸ö×ÊÔ´id, objid
+-- æŸ¥çœ‹é”ä½äº†å“ªä¸ªèµ„æºid, objid
 exec sp_lock;
 
--- 13.»ñÈ¡½Å±¾µÄÖ´ĞĞÊ±¼ä
+-- 13.è·å–è„šæœ¬çš„æ‰§è¡Œæ—¶é—´
 declare @timediff datetime;
 select @timediff=getdate();
 use BookDB_Pre;
